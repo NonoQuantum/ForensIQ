@@ -6,7 +6,7 @@ ForensIQ is a web platform built for law enforcement and legal teams to analyze 
 
 ## Live Demo
 
-🔗 **[Coming soon — will be updated after deployment]**
+🔗 **[https://forensiq-jcjm.onrender.com](https://forensiq-jcjm.onrender.com)**
 
 ---
 
