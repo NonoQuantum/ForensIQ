@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForensIQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <nav class="site-nav">
+    <span class="site-name">ForensIQ</span>
+    <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">العربية</button>
+  </nav>
+
+  <main class="submitted-page">
+
+    <div class="submitted-icon">&#10003;</div>
+
+    <h1 data-en="Submission received." data-ar="تم استلام البلاغ.">Submission received.</h1>
+
+    <p data-en="Your file has been securely submitted for forensic analysis."
+       data-ar="تم إرسال ملفك بأمان للتحليل الجنائي.">
+      Your file has been securely submitted for forensic analysis.
+    </p>
+    <p data-en="The competent authorities will review your case and contact you as soon as possible."
+       data-ar="ستقوم الجهات المختصة بمراجعة قضيتك والتواصل معك في أقرب وقت ممكن.">
+      The competent authorities will review your case and contact you as soon as possible.
+    </p>
+
+    <div class="case-ref">
+      <span class="case-ref-label"
+            data-en="Your case reference"
+            data-ar="رقم مرجع قضيتك">Your case reference</span>
+      <span class="case-ref-id">{{ case_id }}</span>
+    </div>
+
+    <p class="submitted-note"
+       data-en="Keep this reference number. You may be asked to quote it when you are contacted."
+       data-ar="احتفظ بهذا الرقم المرجعي. قد يُطلب منك ذكره عند التواصل معك.">
+      Keep this reference number. You may be asked to quote it when you are contacted.
+    </p>
+
+    <a href="/" class="submit-another"
+       data-en="Submit another case"
+       data-ar="تقديم بلاغ آخر">
+      Submit another case
+    </a>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (localStorage.getItem("lang") === "ar") toggleLang(true);
+    });
+  </script>
+
+</body>
+</html>

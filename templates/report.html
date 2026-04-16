@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForensIQ — {{ r.case_title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="report-page">
+
+  <nav class="site-nav">
+    <span class="site-name">ForensIQ</span>
+    <a href="/" class="back-link"
+       data-en="← Reporter portal"
+       data-ar="→ بوابة المُبلِّغ">← Reporter portal</a>
+  </nav>
+
+  <header class="report-header">
+    <div class="report-meta">
+      <p class="report-eyebrow"
+         data-en="FORENSIC ANALYSIS REPORT"
+         data-ar="تقرير التحليل الجنائي">FORENSIC ANALYSIS REPORT</p>
+      <h1>{{ r.case_title }}</h1>
+      <p class="report-sub">Case {{ r.case_id }} &nbsp;·&nbsp; {{ r.analysis_date }} &nbsp;·&nbsp; {{ r.complainant }}</p>
+    </div>
+
+    <span class="classification-tag
+      {% if r.classification == 'Threats' %}tag-threats
+      {% elif r.classification == 'Blackmail' %}tag-blackmail
+      {% else %}tag-fraud{% endif %}">
+      {{ r.classification | upper }}
+    </span>
+  </header>
+
+  <div class="report-body">
+
+    <aside class="case-details">
+
+      <section class="detail-block">
+        <h3 data-en="File" data-ar="الملف">File</h3>
+        <dl>
+          <dt data-en="Name"         data-ar="الاسم">Name</dt>         <dd>{{ r.file_name }}</dd>
+          <dt data-en="Lines"        data-ar="الأسطر">Lines</dt>       <dd>{{ r.total_lines }}</dd>
+          <dt data-en="Messages"     data-ar="الرسائل">Messages</dt>   <dd>{{ r.total_messages }}</dd>
+          <dt data-en="Participants" data-ar="المشاركون">Participants</dt>
+          <dd>{% for sender in r.senders %}{{ sender }}{% if not loop.last %}, {% endif %}{% else %}Unknown{% endfor %}</dd>
+        </dl>
+      </section>
+
+      <section class="detail-block">
+        <h3 data-en="Classification" data-ar="التصنيف">Classification</h3>
+        <dl>
+          <dt data-en="Type"       data-ar="النوع">Type</dt>           <dd>{{ r.classification }}</dd>
+          <dt data-en="Confidence" data-ar="نسبة الثقة">Confidence</dt><dd>{{ r.confidence }}%</dd>
+        </dl>
+      </section>
+
+      <a href="/download/{{ r.case_id }}" class="download-btn"
+         data-en="Download PDF (English)" data-ar="تحميل PDF (بالإنجليزية)">Download PDF (English)</a>
+      <a href="/" class="new-analysis-link"
+         data-en="Run new analysis" data-ar="تحليل جديد">Run new analysis</a>
+
+    </aside>
+
+    <main class="report-content">
+
+      <section class="integrity">
+        <h2 data-en="File Integrity" data-ar="سلامة الملف">File Integrity</h2>
+        <p data-en="SHA-256 hash generated at upload. Any change to the file produces a different hash."
+           data-ar="تم إنشاء بصمة SHA-256 عند الرفع. أي تعديل على الملف يُنتج بصمة مختلفة تماماً.">
+          SHA-256 hash generated at upload. Any change to the file produces a different hash.
+        </p>
+        <pre class="hash-value" id="hash-display">{{ r.file_hash }}</pre>
+        <button class="copy-btn" onclick="copyHash()"
+                data-en="Copy hash" data-ar="نسخ البصمة">Copy hash</button>
+        <p class="verified-note"
+           data-en="✓ Hash recorded at time of ingestion"
+           data-ar="✓ تم تسجيل البصمة لحظة الرفع">
+          &#10003; Hash recorded at time of ingestion
+        </p>
+      </section>
+
+      <section class="findings">
+        <h2 data-en="Forensic Findings" data-ar="النتائج الجنائية">Forensic Findings</h2>
+        <ol>
+          {% for finding in r.findings %}
+          <li>{{ finding }}</li>
+          {% endfor %}
+        </ol>
+      </section>
+
+      <section class="messages">
+        <h2 data-en="Message Preview" data-ar="معاينة الرسائل">Message Preview</h2>
+        <p class="section-note"
+           data-en="First 8 messages from the uploaded file, as exported."
+           data-ar="أول 8 رسائل من الملف المرفوع، كما تم تصديرها.">
+          First 8 messages from the uploaded file, as exported.
+        </p>
+
+        {% if r.preview %}
+          {% for msg in r.preview %}
+          <article class="message">
+            <header>
+              <strong>{{ msg.sender }}</strong>
+              <time>{{ msg.timestamp }}</time>
+            </header>
+            <p>{{ msg.text }}</p>
+          </article>
+          {% endfor %}
+        {% else %}
+          <p class="no-data"
+             data-en="No messages could be parsed. Make sure the file is a standard WhatsApp export."
+             data-ar="تعذّر تحليل الرسائل. تأكد من أن الملف مُصدَّر بالطريقة الصحيحة من واتساب.">
+            No messages could be parsed. Make sure the file is a standard WhatsApp export.
+          </p>
+        {% endif %}
+      </section>
+
+      <section class="custody">
+        <h2 data-en="Chain of Custody" data-ar="سلسلة الحيازة">Chain of Custody</h2>
+        <dl class="custody-grid">
+          <dt data-en="Case reference"  data-ar="رقم القضية">Case reference</dt>  <dd class="mono">{{ r.case_id }}</dd>
+          <dt data-en="File submitted"  data-ar="الملف المُرسَل">File submitted</dt><dd>{{ r.file_name }}</dd>
+          <dt data-en="Processed at"   data-ar="وقت المعالجة">Processed at</dt>   <dd>{{ r.analysis_date }}</dd>
+          <dt data-en="Platform"       data-ar="المنصة">Platform</dt>             <dd>ForensIQ v1.0 (Demo)</dd>
+          <dt data-en="SHA-256"        data-ar="بصمة SHA-256">SHA-256</dt>        <dd class="mono hash-small">{{ r.file_hash }}</dd>
+        </dl>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script>
+    function copyHash() {
+      const text = document.getElementById("hash-display").innerText;
+      navigator.clipboard.writeText(text).then(() => alert("Hash copied."));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      if (localStorage.getItem("lang") === "ar") toggleLang(true);
+    });
+  </script>
+
+</body>
+</html>

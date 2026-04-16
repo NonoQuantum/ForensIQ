@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForensIQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <nav class="site-nav">
+    <span class="site-name">ForensIQ</span>
+    <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">العربية</button>
+  </nav>
+
+  <main class="upload-page">
+
+    <header class="upload-header">
+      <h1 data-en="Submit your chat file for review." data-ar="أرسل ملف محادثتك للمراجعة.">Submit your chat file for review.</h1>
+      <p data-en="Upload your chat export file (.txt format). Your submission will be handled carefully and reviewed by the appropriate team. Please ensure the file is the original export."
+         data-ar="ارفع ملف تصدير المحادثة بصيغة .txt. سيتم التعامل مع بلاغك بعناية ومراجعته من قِبل الفريق المختص. يُرجى التأكد من أن الملف هو التصدير الأصلي.">
+        Upload your chat export file (.txt format). Your submission will be handled carefully and reviewed by the appropriate team. Please ensure the file is the original export.
+      </p>
+      <p class="upload-hint"
+         data-en="Not sure how to export? On WhatsApp: open the chat → tap the three dots → Export Chat → Without Media, then upload the .txt file below."
+         data-ar="لا تعرف كيف تُصدّر المحادثة؟ في واتساب: افتح المحادثة ← اضغط على النقاط الثلاث ← تصدير المحادثة ← بدون وسائط، ثم ارفع ملف .txt أدناه.">
+        Not sure how to export? On WhatsApp: open the chat → tap the three dots → <strong>Export Chat</strong> → <strong>Without Media</strong>, then upload the .txt file below.
+      </p>
+    </header>
+
+    {% if error %}
+    <p class="upload-error">{{ error }}</p>
+    {% endif %}
+
+    <form class="upload-form" action="/analyze" method="POST" enctype="multipart/form-data">
+
+      <label class="file-drop" id="file-drop">
+        <input type="file" name="chat_file" id="chat_file" accept=".txt" required />
+        <span class="drop-instruction"
+              data-en="Drop your .txt file here or click to browse"
+              data-ar="اسحب ملف .txt هنا أو اضغط للتصفح">
+          Drop your <strong>.txt</strong> file here or click to browse
+        </span>
+        <span class="file-name" id="file-name"
+              data-en="No file selected"
+              data-ar="لم يتم اختيار ملف">
+          No file selected
+        </span>
+      </label>
+
+      <label for="case_title">
+        <span data-en="Case title" data-ar="عنوان القضية">Case title</span>
+        <span class="field-note" data-en="(optional)" data-ar="(اختياري)">(optional)</span>
+      </label>
+      <input type="text" name="case_title" id="case_title"
+             data-placeholder-en="e.g. Harassment — March 2024"
+             data-placeholder-ar="مثال: قضية مضايقة — مارس 2024"
+             placeholder="e.g. Harassment — March 2024" />
+
+      <label for="complainant">
+        <span data-en="Complainant name" data-ar="اسم المُشتكي">Complainant name</span>
+        <span class="field-note" data-en="(optional)" data-ar="(اختياري)">(optional)</span>
+      </label>
+      <input type="text" name="complainant" id="complainant"
+             data-placeholder-en="e.g. Sarah Al-Mansouri"
+             data-placeholder-ar="مثال: سارة المنصوري"
+             placeholder="e.g. Sarah Al-Mansouri" />
+
+      <button type="submit" id="submit-btn"
+              data-en="Analyse file" data-ar="تحليل الملف">
+        Analyse file
+      </button>
+
+    </form>
+
+    <p class="privacy-note"
+       data-en="Your file is securely transmitted to our forensic team for analysis."
+       data-ar="يُرسَل ملفك بأمان إلى فريقنا الجنائي للتحليل.">
+      Your file is securely transmitted to our forensic team for analysis.
+    </p>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (localStorage.getItem("lang") === "ar") toggleLang(true);
+    });
+  </script>
+
+</body>
+</html>

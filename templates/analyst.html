@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForensIQ — Analyst Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <nav class="site-nav">
+    <span class="site-name">ForensIQ</span>
+    <span class="demo-tag">ANALYST</span>
+    <a href="/" class="back-link">← Reporter portal</a>
+  </nav>
+
+  <main class="analyst-page">
+
+    <div class="analyst-header">
+      <div>
+        <h1>Submitted Cases</h1>
+        <p class="analyst-sub">All cases are stored locally and updated in real time.</p>
+      </div>
+      <span class="case-count-badge">{{ cases | length }} case{% if cases | length != 1 %}s{% endif %}</span>
+    </div>
+
+    {% if cases %}
+
+    <!-- Summary strip -->
+    <div class="summary-strip">
+      {% set threats   = cases | selectattr('classification', 'equalto', 'Threats')   | list | length %}
+      {% set blackmail = cases | selectattr('classification', 'equalto', 'Blackmail') | list | length %}
+      {% set fraud     = cases | selectattr('classification', 'equalto', 'Fraud')     | list | length %}
+      {% set normal    = cases | length - threats - blackmail - fraud %}
+      <div class="summary-item">
+        <span class="summary-num red">{{ threats }}</span>
+        <span class="summary-label">Threats</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-num amber">{{ blackmail }}</span>
+        <span class="summary-label">Blackmail</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-num purple">{{ fraud }}</span>
+        <span class="summary-label">Fraud</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-num green">{{ normal }}</span>
+        <span class="summary-label">Normal</span>
+      </div>
+    </div>
+
+    <table class="cases-table">
+      <thead>
+        <tr>
+          <th>Case ID</th>
+          <th>Title</th>
+          <th>Complainant</th>
+          <th>Classification</th>
+          <th>Confidence</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in cases %}
+        <tr>
+          <td class="mono case-id-cell">{{ c.case_id }}</td>
+          <td>{{ c.case_title }}</td>
+          <td class="muted-cell">{{ c.complainant }}</td>
+          <td>
+            <span class="classification-tag
+              {% if c.classification == 'Threats' %}tag-threats
+              {% elif c.classification == 'Blackmail' %}tag-blackmail
+              {% elif c.classification == 'Fraud' %}tag-fraud
+              {% else %}tag-normal{% endif %}">
+              {{ c.classification | upper }}
+            </span>
+          </td>
+          <td>
+            <div class="confidence-bar-wrap">
+              <div class="confidence-bar" style="width: {{ c.confidence }}%"></div>
+              <span class="confidence-label">{{ c.confidence }}%</span>
+            </div>
+          </td>
+          <td class="muted-cell">{{ c.analysis_date }}</td>
+          <td><a href="/analyst/{{ c.case_id }}" class="view-link">View report</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% else %}
+    <div class="no-cases">
+      <div class="no-cases-icon">&#128196;</div>
+      <p>No cases submitted yet.</p>
+      <a href="/" class="submit-another">Go to reporter portal</a>
+    </div>
+    {% endif %}
+
+  </main>
+
+</body>
+</html>

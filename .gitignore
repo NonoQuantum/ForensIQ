@@ -1,0 +1,8 @@
+.env
+cases.json
+flask.log
+__pycache__/
+*.pyc
+*.pyo
+ngrok.exe
+ngrok.zip
