@@ -47,6 +47,32 @@ a:hover { text-decoration: underline; }
   flex: 1;
 }
 
+.site-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  text-decoration: none;
+}
+
+.site-logo img {
+  height: 28px;
+  width: 28px;
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(195deg) brightness(1.2);
+}
+
+.site-logo span {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+
+.site-logo span em {
+  color: var(--accent);
+  font-style: normal;
+}
+
 .demo-tag {
   font-size: 0.65rem;
   font-weight: 700;

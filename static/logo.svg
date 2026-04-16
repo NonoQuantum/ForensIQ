@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" width="160" height="40">
+  <!-- Shield shape -->
+  <path d="M8 4 L20 4 L20 18 Q20 26 14 30 Q8 26 8 18 Z"
+        fill="none" stroke="#4f8ef7" stroke-width="1.5"/>
+  <!-- Checkmark inside shield -->
+  <polyline points="11,15 13.5,18 18,11"
+            fill="none" stroke="#4f8ef7" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- ForensIQ text -->
+  <text x="26" y="24"
+        font-family="system-ui, -apple-system, sans-serif"
+        font-size="17"
+        font-weight="700"
+        letter-spacing="0.5"
+        fill="#e8eaf0">Forens</text>
+  <text x="96" y="24"
+        font-family="system-ui, -apple-system, sans-serif"
+        font-size="17"
+        font-weight="700"
+        letter-spacing="0.5"
+        fill="#4f8ef7">IQ</text>
+</svg>

@@ -9,7 +9,10 @@
 <body>
 
   <nav class="site-nav">
-    <span class="site-name">ForensIQ</span>
+    <div class="site-logo">
+      <img src="{{ url_for('static', filename='encrypted.png') }}" alt="shield" />
+      <span>Forens<em>IQ</em></span>
+    </div>
     <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">العربية</button>
   </nav>
 
