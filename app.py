@@ -16,6 +16,8 @@ import hashlib
 import re
 import json
 import os
+import zipfile
+import io
 from datetime import datetime
 from flask import Flask, request, render_template, redirect, url_for, make_response
 from fpdf import FPDF
@@ -333,18 +335,32 @@ def analyze():
     if not uploaded_file or uploaded_file.filename == "":
         return render_template("index.html", error="Please upload a WhatsApp .txt file before submitting.")
 
-    if not uploaded_file.filename.lower().endswith(".txt"):
-        return render_template("index.html", error="Only .txt files exported from WhatsApp are accepted.")
+    filename_lower = uploaded_file.filename.lower()
+    if not filename_lower.endswith(".txt") and not filename_lower.endswith(".zip"):
+        return render_template("index.html", error="Only .txt or .zip files exported from WhatsApp are accepted.")
 
     # --- 2. Read raw bytes & generate hash ---
     file_bytes = uploaded_file.read()
     file_hash  = generate_hash(file_bytes)
 
+    # If zip, extract the first .txt file inside
+    if filename_lower.endswith(".zip"):
+        try:
+            with zipfile.ZipFile(io.BytesIO(file_bytes)) as zf:
+                txt_files = [f for f in zf.namelist() if f.lower().endswith(".txt")]
+                if not txt_files:
+                    return render_template("index.html", error="No .txt file found inside the zip. Please export without media.")
+                txt_bytes = zf.read(txt_files[0])
+        except zipfile.BadZipFile:
+            return render_template("index.html", error="The zip file appears to be corrupted.")
+    else:
+        txt_bytes = file_bytes
+
     # Decode text (WhatsApp exports are UTF-8; fall back to latin-1 for older exports)
     try:
-        text = file_bytes.decode("utf-8")
+        text = txt_bytes.decode("utf-8")
     except UnicodeDecodeError:
-        text = file_bytes.decode("latin-1")
+        text = txt_bytes.decode("latin-1")
 
     # --- 3. Parse the chat ---
     parsed = parse_whatsapp_chat(text)
