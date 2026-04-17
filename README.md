@@ -25,7 +25,7 @@ ForensIQ solves all three.
 
 ## What It Does
 
-1. **Victim uploads** their exported chat file (e.g. a WhatsApp `.txt` export) through a simple web form
+1. **Victim uploads** their exported chat file (e.g. a WhatsApp `.txt` or `.zip` export) through a simple web form
 2. **SHA-256 hash** is generated instantly — proving the file is untampered
 3. **AI analyzes** the conversation and classifies it as: Threats / Blackmail / Fraud / Normal
 4. **Analyst dashboard** shows all submitted cases in real time
